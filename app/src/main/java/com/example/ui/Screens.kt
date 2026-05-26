@@ -26,6 +26,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.R
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import com.example.data.AuditLog
 import com.example.data.TransactionLog
 import com.example.data.User
@@ -1502,30 +1505,66 @@ fun InvestmentScreen(viewModel: WalletViewModel, user: User?) {
                 }
             }
         } else {
-            // Asset Selection Tab
+            // Asset Selection Tab with Professional Icons
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(16.dp))
                     .background(CardDarkBlueVal)
-                    .padding(4.dp)
+                    .padding(6.dp)
             ) {
                 listOf("BTC", "ETH", "WAM").forEach { symbol ->
-                    Box(
+                    val isSelected = currencyType == symbol
+                    val iconRes = when (symbol) {
+                        "BTC" -> R.drawable.img_btc_coin_1779833107063
+                        "ETH" -> R.drawable.img_eth_coin_1779833132223
+                        else -> R.drawable.img_wam_coin_1779833151680
+                    }
+                    val fullName = when (symbol) {
+                        "BTC" -> "Bitcoin"
+                        "ETH" -> "Ethereum"
+                        else -> "WAMCoin"
+                    }
+                    
+                    Row(
                         modifier = Modifier
                             .weight(1f)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(if (currencyType == symbol) PrimaryBlueVal else Color.Transparent)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(if (isSelected) PrimaryBlueVal else Color.Transparent)
+                            .border(
+                                1.dp,
+                                if (isSelected) AccentElectricBlueVal else Color.Transparent,
+                                RoundedCornerShape(12.dp)
+                            )
                             .clickable { currencyType = symbol }
-                            .padding(vertical = 10.dp),
-                        contentAlignment = Alignment.Center
+                            .padding(vertical = 12.dp, horizontal = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(
-                            text = symbol,
-                            color = if (currencyType == symbol) Color.White else Color.Gray,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 13.sp
+                        Image(
+                            painter = painterResource(id = iconRes),
+                            contentDescription = symbol,
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clip(CircleShape)
+                                .border(1.dp, Color.White.copy(alpha = 0.2f), CircleShape),
+                            contentScale = ContentScale.Crop
                         )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Column(horizontalAlignment = Alignment.Start) {
+                            Text(
+                                text = symbol,
+                                color = if (isSelected) Color.White else Color.LightGray,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 13.sp
+                            )
+                            Text(
+                                text = fullName,
+                                color = if (isSelected) AccentElectricBlueVal else Color.Gray,
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
                     }
                 }
             }
@@ -1544,20 +1583,49 @@ fun InvestmentScreen(viewModel: WalletViewModel, user: User?) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        val activeIconRes = when (currencyType) {
+                            "BTC" -> R.drawable.img_btc_coin_1779833107063
+                            "ETH" -> R.drawable.img_eth_coin_1779833132223
+                            else -> R.drawable.img_wam_coin_1779833151680
+                        }
+                        
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Box(
+                            Image(
+                                painter = painterResource(id = activeIconRes),
+                                contentDescription = currencyType,
                                 modifier = Modifier
-                                    .size(10.dp)
+                                    .size(38.dp)
                                     .clip(CircleShape)
-                                    .background(AlertSuccessGreen)
+                                    .border(1.5.dp, AccentElectricBlueVal, CircleShape),
+                                contentScale = ContentScale.Crop
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "مخطط مباشر: $currencyType / USD",
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 13.sp
-                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(8.dp)
+                                            .clip(CircleShape)
+                                            .background(AlertSuccessGreen)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = "مباشر: $currencyType / USD",
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 14.sp
+                                    )
+                                }
+                                Text(
+                                    text = when (currencyType) {
+                                        "BTC" -> "بيتكوين الرقمية"
+                                        "ETH" -> "إيثيريوم الذكي"
+                                        else -> "عملة WAM المميزة"
+                                    },
+                                    color = Color.Gray,
+                                    fontSize = 11.sp
+                                )
+                            }
                         }
                         Text(
                             text = when (currencyType) {
