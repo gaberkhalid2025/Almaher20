@@ -3,43 +3,57 @@ package com.example.data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "users")
-data class User(
-    @PrimaryKey val phone: String, // e.g., 777644670
-    val fullName: String,
-    val email: String,
-    val passwordHash: String, // Hashed password
-    val balanceYer: Double = 285400.0, // Initial Yer balance
-    val balanceUsd: Double = 450.0,    // Initial Usd balance
-    val kycStatus: String = "PENDING", // PENDING, SUBMITTED, APPROVED
-    val isBlocked: Boolean = false,
-    val selfiePath: String? = null,
-    val idCardPath: String? = null
+@Entity(tableName = "system_config")
+data class SystemConfig(
+    @PrimaryKey val id: Int = 1,
+    val appName: String = "الماهر للحسابات",
+    val primaryColorHex: String = "#0D47A1", // Deep blue
+    val secondaryColorHex: String = "#FFC107", // Bright gold
+    val isDarkMode: Boolean = false,
+    val isReportsEnabled: Boolean = true,
+    val isNotificationsEnabled: Boolean = true,
+    val isBackupEnabled: Boolean = true,
+    val isRealTimeSyncEnabled: Boolean = true,
+    val minStockLimit: Int = 10,
+    val smsGatewayNumber: String = "+967777644670",
+    val smsApiKey: String = "",
+    val customColumnsSemicolonSeparated: String = "", // e.g. "رقم الفاتورة;تاريخ الاستحقاق"
+    val supervisorPermissionsJson: String = "إضافة;تعديل;حذف", // Permissions granted to supervisors
+    val appPasswordHash: String = "123456" // Default login password
 )
 
-@Entity(tableName = "transactions")
+@Entity(tableName = "app_service")
+data class AppService(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String,
+    val price: Double,
+    val isEnabled: Boolean = true,
+    val type: String = "خدمة عامة" // Like: خدمة عملاء - توصيل - صيانة - استشارات
+)
+
+@Entity(tableName = "client_record")
+data class ClientRecord(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String,
+    val phone: String = "",
+    val debtAmount: Double = 0.0, // الديون (Red)
+    val paidAmount: Double = 0.0, // المدفوع (Green)
+    val creditAmount: Double = 0.0, // الرصيد الدائن (Orange)
+    val lastUpdateEpoch: Long = System.currentTimeMillis(),
+    val customFieldsJson: String = "" // For dynamic table features, format: "key1:val1;key2:val2"
+) {
+    // Calculates net balance: (Credit + Paid) - Debt
+    val netBalance: Double
+        get() = (creditAmount + paidAmount) - debtAmount
+}
+
+@Entity(tableName = "transaction_log")
 data class TransactionLog(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val senderPhone: String,
-    val receiverPhone: String,
+    val clientId: Long,
+    val clientName: String,
     val amount: Double,
-    val currency: String, // YER, USD
-    val type: String, // P2P, BILL, RECHARGE, WITHDRAW, DEPOSIT
+    val type: String, // "دين" (debt), "مدفوع" (paid), "رصيد دائن" (credit)
     val timestamp: Long = System.currentTimeMillis(),
-    val reference: String = ""
-)
-
-@Entity(tableName = "audit_logs")
-data class AuditLog(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val eventName: String, // LOGIN_SUCCESS, LOGIN_FAIL, ADMIN_LOGIN_SUCCESS, ADMIN_LOGIN_FAIL, TRANSFER, KYC_SUBMIT
-    val timestamp: Long = System.currentTimeMillis(),
-    val details: String,
-    val deviceInfo: String = "Android Device"
-)
-
-@Entity(tableName = "app_settings")
-data class AppSetting(
-    @PrimaryKey val key: String,
-    val value: String
+    val notes: String = ""
 )

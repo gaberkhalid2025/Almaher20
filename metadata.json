@@ -1,6 +1,6 @@
 {
-  "name": "الماهر موني",
-  "description": "تطبيق محفظة WAM الإلكترونية المطور والآمن تحت إشراف المالك ماهر أحمد الوتاري",
+  "name": "الماهر للحسابات",
+  "description": "تطبيق محفظة وحسابات الماهر المطور والآمن تحت إشراف المالك ماهر أحمد الوتاري",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

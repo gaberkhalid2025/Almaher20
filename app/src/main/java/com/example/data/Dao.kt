@@ -5,46 +5,56 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WalletDao {
-    // Users
-    @Query("SELECT * FROM users WHERE phone = :phone")
-    fun getUser(phone: String): Flow<User?>
 
-    @Query("SELECT * FROM users WHERE phone = :phone")
-    suspend fun getUserSync(phone: String): User?
+    // System Config
+    @Query("SELECT * FROM system_config WHERE id = 1")
+    fun getSystemConfigFlow(): Flow<SystemConfig?>
 
-    @Query("SELECT * FROM users")
-    fun getAllUsers(): Flow<List<User>>
+    @Query("SELECT * FROM system_config WHERE id = 1")
+    suspend fun getSystemConfig(): SystemConfig?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUser(user: User)
+    suspend fun insertOrUpdateConfig(config: SystemConfig)
+
+    // Services
+    @Query("SELECT * FROM app_service ORDER BY id DESC")
+    fun getAllServicesFlow(): Flow<List<AppService>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertService(service: AppService)
 
     @Update
-    suspend fun updateUser(user: User)
+    suspend fun updateService(service: AppService)
 
-    // Transactions
-    @Query("SELECT * FROM transactions WHERE senderPhone = :phone OR receiverPhone = :phone ORDER BY timestamp DESC")
-    fun getTransactionsForUser(phone: String): Flow<List<TransactionLog>>
+    @Delete
+    suspend fun deleteService(service: AppService)
 
-    @Query("SELECT * FROM transactions ORDER BY timestamp DESC")
-    fun getAllTransactions(): Flow<List<TransactionLog>>
+    @Query("DELETE FROM app_service")
+    suspend fun deleteAllServices()
+
+    // Client records
+    @Query("SELECT * FROM client_record ORDER BY id DESC")
+    fun getAllClientsFlow(): Flow<List<ClientRecord>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertClient(client: ClientRecord): Long
+
+    @Update
+    suspend fun updateClient(client: ClientRecord)
+
+    @Delete
+    suspend fun deleteClient(client: ClientRecord)
+
+    @Query("DELETE FROM client_record")
+    suspend fun deleteAllClients()
+
+    // Transaction logs
+    @Query("SELECT * FROM transaction_log ORDER BY timestamp DESC")
+    fun getAllTransactionsFlow(): Flow<List<TransactionLog>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTransaction(transaction: TransactionLog)
 
-    // Audit Logs
-    @Query("SELECT * FROM audit_logs ORDER BY timestamp DESC")
-    fun getAllAuditLogs(): Flow<List<AuditLog>>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAuditLog(log: AuditLog)
-
-    // App Settings
-    @Query("SELECT * FROM app_settings")
-    fun getAppSettingsFlow(): Flow<List<AppSetting>>
-
-    @Query("SELECT * FROM app_settings WHERE `key` = :key")
-    suspend fun getAppSetting(key: String): AppSetting?
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAppSetting(setting: AppSetting)
+    @Query("DELETE FROM transaction_log")
+    suspend fun deleteAllTransactions()
 }

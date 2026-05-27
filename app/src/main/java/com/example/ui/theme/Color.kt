@@ -2,16 +2,19 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// WAM Theme Color Specs (Deep blue + Black elegant tones)
-val PrimaryBlue = Color(0xFF0A2463)
-val SecondaryBlue = Color(0xFF3A7CA5)
-val AccentBlue = Color(0xFF00B4D8)
+// Default color definitions requested in Tweak 3
+val PrimaryBlueDefault = Color(0xFF0D47A1) // أزرق عميق #0D47A1
+val SecondaryGoldDefault = Color(0xFFFFC107) // ذهبي لامع #FFC107
+val BackgroundLightDefault = Color(0xFFF5F5F5) // أبيض فاتح #F5F5F5
 
-val DarkBackground = Color(0xFF0D0D0D)
-val CardDarkBlue = Color(0xFF1A1A2E)
+val DebtRed = Color(0xFFE53935) // الديون: أحمر #E53935
+val PaidGreen = Color(0xFF43A047) // المدفوع: أخضر #43A047
+val CreditOrange = Color(0xFFFB8C00) // الرصيد الدائن: برتقالي #FB8C00
 
-val SuccessGreen = Color(0xFF00E676)
-val ErrorRed = Color(0xFFFF3B30)
-
-val OnPrimaryWhite = Color(0xFFFFFFFF)
-val OnSecondaryGrey = Color(0xFFB0B0B0)
+// Neutral palettes
+val DarkNavy = Color(0xFF0F172A)
+val CardDarkBlue = Color(0xFF1E293B)
+val LightGray = Color(0xFFE2E8F0)
+val MediumGray = Color(0xFF64748B)
+val TextDark = Color(0xFF1E293B)
+val TextLight = Color(0xFFF8FAFC)
